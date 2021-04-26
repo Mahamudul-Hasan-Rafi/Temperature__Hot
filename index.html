@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="location-name" type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button id="search-weather" type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img id="weather-icon" src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
+            <h1 id="location">Dhaka</h1>
+            <h3><span id="temp">38.16</span>&deg;C</h3>
+            <h1 class="lead" id="description">Clouds</h1>
+        </div>
+    </div>
+    <script>
+        function displayData(location_name, temperature, weather, weather_icon){
+            const temperature_celcius=document.getElementById('temp');
+            temperature_celcius.innerText=(temperature-273.15).toFixed(2);
+
+            const location_=document.getElementById('location');
+            location_.innerText=location_name;
+
+            const weather_desc=document.getElementById('description');
+            weather_desc.innerText=weather;
+
+            const weather_icon_=document.getElementById('weather-icon');
+            weather_icon_.src=`https://openweathermap.org/img/wn/${weather_icon}@2x.png`;
+        }
+
+        function fetchWeatherData(location_name){
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location_name}&appid=c281c30fab972a46b82cc2f4c98e8036`)
+            .then(res=>res.json())
+            .then(data=>{
+                let temperature=data["main"]["temp"];
+                let weather=data["weather"][0]["main"];
+                let weather_icon=data["weather"][0]["icon"];
+                //console.log(`${temperature}  ${weather}  ${weather_icon}`);
+                displayData(location_name, temperature, weather, weather_icon);
+            })
+        }
+
+        document.getElementById('search-weather').addEventListener('click',function(){ 
+            let location_name=document.getElementById('location-name').value;
+            fetchWeatherData(location_name);
+
+        })
+    </script>
+</body>
+
+</html>
